@@ -12,42 +12,93 @@
 
     <div id="main">
         <form id="form_field">
-            <input type="text" id="input_field">
+            <input type="text" id="input_field" v-bind:value="value">
         </form>
         <div id="buttons">
             <div class="button_row">
-                <button class="button_column">AC</button>
-                <button class="button_column">+/-</button>
+                <button class="button_column" v-on:click="setToDefault">AC</button>
+                <button class="button_column" v-on:click="setToOpposite">+/-</button>
                 <button class="button_column">%</button>
                 <button class="button_column">/</button>
             </div>
             <div class="button_row">
-                <button class="button_column">7</button>
-                <button class="button_column">8</button>
-                <button class="button_column">9</button>
+                <button class="button_column" v-on:click="setNewValue(7)">7</button>
+                <button class="button_column" v-on:click="setNewValue(8)">8</button>
+                <button class="button_column" v-on:click="setNewValue(9)">9</button>
                 <button class="button_column">*</button>
             </div>
             <div class="button_row">
-                <button class="button_column">4</button>
-                <button class="button_column">5</button>
-                <button class="button_column">6</button>
+                <button class="button_column" v-on:click="setNewValue(4)">4</button>
+                <button class="button_column" v-on:click="setNewValue(5)">5</button>
+                <button class="button_column" v-on:click="setNewValue(6)">6</button>
                 <button class="button_column">-</button>
             </div>
             <div class="button_row">
-                <button class="button_column">1</button>
-                <button class="button_column">2</button>
-                <button class="button_column">3</button>
+                <button class="button_column" v-on:click="setNewValue(1)">1</button>
+                <button class="button_column" v-on:click="setNewValue(2)">2</button>
+                <button class="button_column" v-on:click="setNewValue(3)">3</button>
                 <button class="button_column">+</button>
             </div>
             <div class="button_row">
-                <button class="button_column" id="zero">0</button>
-                <button class="button_column">.</button>
+                <button class="button_column" v-on:click="setNewValue(0)" id="zero_size">0</button>
+                <button class="button_column" >.</button>
                 <button class="button_column">=</button>
             </div>
         </div>
     </div>
     
-    
-    <script></script>
+    <!--Features:-->
+    <!--1. Push a button 0 to 9 will log their value in the input field-->
+    <!--* each consecutive log will add a decimal place to the input field-->
+    5. pressing '.' will add a decimal point
+    <!--3. Pressing '+/-' will turn the value into - or positive-->
+    2. Pressing the operators will run the equation and the values.
+    <!--4. 'AC' will reset-->
+
+    5. Log onkeydowns
+
+    <script>
+
+        var myApp = new Vue({
+            el: '#main',
+            data: {
+                value: 0,
+                decimal: false,
+                status: true
+            },
+            methods: {
+                setNewValue: function(val) {
+                    currentValue = this.value;
+                    if (currentValue) {
+                        currentValue *= 10;
+                        var newValue = val + currentValue;
+                        this.value = newValue;
+                        return;
+                    }
+                    this.value = val;
+                },
+                // setDecimalPoint: function() {
+                //     this.decimal = true;
+                // },
+                setToDefault: function() {
+                    this.value = 0;
+                    this.decimal = false;
+                    this.status = true;
+                },
+                setToOpposite: function() {
+                    if (this.status) {
+                        this.status = !this.status;
+                        this.value = this.value - (this.value*2);
+                    } else if (!this.status) {
+                        this.status = true;
+                        this.value = this.value - (this.value*2);
+                    }
+                    // console.log(this.status)
+                }
+            },
+                
+        })
+
+    </script>
 </body>
 </html>
