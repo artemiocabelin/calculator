@@ -1,0 +1,50 @@
+#main {
+    background: yellow;
+    width: 400px;
+    height: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#form_field {
+    background: red;
+    height: 20%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+#buttons {
+    /*background: blue;*/
+    height: 75%;
+    width: 100%;
+    margin-top: 5%;
+}
+
+#input_field {
+    height: 100%;
+    width: 100%;
+    text-align: right;
+}
+
+.button_row {
+    width: 100%;
+    height: 19%;
+    margin-bottom: 1%;
+    /*border: 1px solid black;*/
+    box-sizing: border-box;
+    /*background: green;*/
+}
+
+.button_column {
+    display: inline-block;
+    width: 24%;
+    height: 100%;
+    background: orange;
+    /*margin-right: -4px;*/
+}
+
+#zero {
+    width:49.3%;
+}
