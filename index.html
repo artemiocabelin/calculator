@@ -18,31 +18,31 @@
             <div class="button_row">
                 <button class="button_column" v-on:click="setToDefault">AC</button>
                 <button class="button_column" v-on:click="setToOpposite">+/-</button>
-                <button class="button_column">%</button>
-                <button class="button_column">/</button>
+                <button class="button_column" v-on:click="setPercent">%</button>
+                <button class="button_column" v-on:click="divideValue">/</button>
             </div>
             <div class="button_row">
                 <button class="button_column" v-on:click="setNewValue(7)">7</button>
                 <button class="button_column" v-on:click="setNewValue(8)">8</button>
                 <button class="button_column" v-on:click="setNewValue(9)">9</button>
-                <button class="button_column">*</button>
+                <button class="button_column" v-on:click="multiplyValue">*</button>
             </div>
             <div class="button_row">
                 <button class="button_column" v-on:click="setNewValue(4)">4</button>
                 <button class="button_column" v-on:click="setNewValue(5)">5</button>
                 <button class="button_column" v-on:click="setNewValue(6)">6</button>
-                <button class="button_column">-</button>
+                <button class="button_column" v-on:click="subtractValue">-</button>
             </div>
             <div class="button_row">
                 <button class="button_column" v-on:click="setNewValue(1)">1</button>
                 <button class="button_column" v-on:click="setNewValue(2)">2</button>
                 <button class="button_column" v-on:click="setNewValue(3)">3</button>
-                <button class="button_column">+</button>
+                <button class="button_column" v-on:click="addValue">+</button>
             </div>
             <div class="button_row">
                 <button class="button_column" v-on:click="setNewValue(0)" id="zero_size">0</button>
-                <button class="button_column" >.</button>
-                <button class="button_column">=</button>
+                <button class="button_column" v-on:click="setDecimalPoint">.</button>
+                <button class="button_column" v-on:click="executeOperation">=</button>
             </div>
         </div>
     </div>
@@ -50,9 +50,14 @@
     <!--Features:-->
     <!--1. Push a button 0 to 9 will log their value in the input field-->
     <!--* each consecutive log will add a decimal place to the input field-->
-    5. pressing '.' will add a decimal point
+    <!--5. pressing '.' will add a decimal point but will turn it into a string-->
     <!--3. Pressing '+/-' will turn the value into - or positive-->
-    2. Pressing the operators will run the equation and the values.
+    <!--2. Pressing the operators will run the equation and the values.
+        <!-%-->
+        <!--+
+        -
+        /
+        *-->
     <!--4. 'AC' will reset-->
 
     5. Log onkeydowns
@@ -64,12 +69,21 @@
             data: {
                 value: 0,
                 decimal: false,
-                status: true
+                sign: true,
+                finishedExecuting: false,
+                operator: '',
+                cachedValue: 0,
+                stringValue: ''
             },
             methods: {
                 setNewValue: function(val) {
-                    currentValue = this.value;
+                    if (this.finishedExecuting) {
+                        this.finishedExecuting = !this.finishedExecuting;
+                        this.value = 0;
+                    }
+                    var currentValue = this.value;
                     if (currentValue) {
+                        // Work in Progress: put conditional statement here to processs val if this.decimal is true otherwise continue below
                         currentValue *= 10;
                         var newValue = val + currentValue;
                         this.value = newValue;
@@ -77,26 +91,76 @@
                     }
                     this.value = val;
                 },
-                // setDecimalPoint: function() {
-                //     this.decimal = true;
-                // },
+                setDecimalPoint: function() {
+                    if (!this.decimal) {
+                        this.decimal = true;
+                        this.stringValue += this.value+'.0';
+                    }
+                },
                 setToDefault: function() {
                     this.value = 0;
                     this.decimal = false;
-                    this.status = true;
+                    this.sign = true;
+                    this.finishedExecuting = false;
+                    this.operator = '';
+                    this.cachedValue = 0;
+                    this.stringValue = '';
                 },
                 setToOpposite: function() {
-                    if (this.status) {
-                        this.status = !this.status;
+                    if (this.sign) {
+                        this.sign = !this.sign;
                         this.value = this.value - (this.value*2);
-                    } else if (!this.status) {
-                        this.status = true;
+                    } else if (!this.sign) {
+                        this.sign = true;
                         this.value = this.value - (this.value*2);
                     }
-                    // console.log(this.status)
+                },
+                setPercent: function() {
+                    this.value *= 0.01;
+                    this.finishedExecuting = true;
+                },
+                addValue: function() {
+                        this.executeOperation();
+                        this.operator = '+';
+                        this.cachedValue = this.value;
+                        this.finishedExecuting = true;
+                },
+                subtractValue: function() {
+                        this.executeOperation();
+                        this.operator = '-';
+                        this.cachedValue = this.value;
+                        this.finishedExecuting = true;
+                },
+                multiplyValue: function() {
+                        this.executeOperation();
+                        this.operator = '*';
+                        this.cachedValue = this.value;
+                        this.finishedExecuting = true;
+                },
+                divideValue: function() {
+                        this.executeOperation();
+                        this.operator = '/';
+                        this.cachedValue = this.value;
+                        this.finishedExecuting = true;
+                },
+                executeOperation: function() {
+                    if (this.operator === '+') {
+                        this.value = this.cachedValue + this.value;
+                    }
+                    if (this.operator === '-') {
+                        this.value = this.cachedValue - this.value;
+                    }
+                    if (this.operator === '*') {
+                        this.value = this.cachedValue * this.value;
+                    }
+                    if (this.operator === '/') {
+                        this.value = this.cachedValue / this.value;
+                    }
+                    this.operator = '';
+                    this.finishedExecuting = true;
+                    this.cachedValue = this.value;
                 }
-            },
-                
+            }
         })
 
     </script>
